@@ -39,6 +39,12 @@ namespace ControleAcessos
             // É um protocolo de autorização utilizado para API's
             //Install-Package Microsoft.Owin.Security.Oauth
 
+            //para tratabalharmos com Token eclusivmente com JWT, 
+            //PRECISAMOS INSTALAR O SEGUINTE PACOTE
+            //Install-Package Microsoft.IdentityModel.Token.Jwt
+
+
+
             //Este é o objeto de configuração
             var configuration = new HttpConfiguration();
 
@@ -48,6 +54,20 @@ namespace ControleAcessos
             //2 - configurar o retorno (de pascal para camelCase)
             ConfigurarFormatoRetorno(configuration);
 
+
+            //CRIAMOS ALGUMAS INFORMAÇÕES DO TOKEN
+            var options = new OAuthAuthorizationServerOptions()
+            {
+                AllowInsecureHttp = true,
+                TokenEndpointPath = new PathString("/api/login"), //É virtual
+                AccessTokenExpireTimeSpan = TimeSpan.FromHours(1),
+                Provider =  null,    // É O RESPONSAVEL POR PEGAR AS CREDENCIAIS DO USUARIO E CRIAR UM TOKEN
+            };
+
+
+            //3 PRECISAMO FAZER A VALIDAÇÃO DO LOGIN E APARTIR DELE CRIAR UM TOKEN
+            //PARA ESTE FIM PRECISAMOS DE UM LOGIN DE AUTENTICAÇAÕ
+            app.UseOAuthAuthorizationServer();
 
             //5 - salvar as configurações
             app.UseWebApi(configuration);
