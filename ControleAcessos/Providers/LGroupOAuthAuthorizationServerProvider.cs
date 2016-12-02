@@ -34,39 +34,42 @@ namespace ControleAcessos.Providers
 
 
         //SOMENTE PRECISAMO VALIDAR O USUARIO FINAL
-        public override Task GrantResourceOwnerCredentials(OAuthGrantResourceOwnerCredentialsContext context)
+        public override async Task GrantResourceOwnerCredentials(OAuthGrantResourceOwnerCredentialsContext context)
         {
-            //AQUI NOS VAMOS VALIDAR O LOGIN E A SENHA
-
-
-            var user = context.UserName;
-            var password = context.Password;
-
-            //AQUI PODERIAMOS IR NO BANCO PARA VALIDAR
-            if (user.Equals("JLOPES") && password.Equals("12345"))
+            await Task.Run(() =>
             {
-                context.SetError("Invalid_grant", "Credentials Invalid");
-            }else
-            {
-                //AQUI PODEMOS PEGAR AS CLAINS DO BANACO PARA SETAR O QUE O USUARIO É
-                var nome = new Claim(ClaimTypes.Name, "Jean Lopes");
-                var role = new Claim(ClaimTypes.Role, "Administrador");
 
-                var claims = new[]
+                //AQUI NOS VAMOS VALIDAR O LOGIN E A SENHA
+                var user = context.UserName;
+                var password = context.Password;
+
+                //AQUI PODERIAMOS IR NO BANCO PARA VALIDAR
+                if (user.Equals("JLOPES") && password.Equals("12345"))
                 {
+                    context.SetError("Invalid_grant", "Credentials Invalid");
+                }
+                else
+                {
+                    //AQUI PODEMOS PEGAR AS CLAINS DO BANACO PARA SETAR O QUE O USUARIO É
+                    var nome = new Claim(ClaimTypes.Name, "Jean Lopes");
+                    var role = new Claim(ClaimTypes.Role, "Administrador");
+
+                    var claims = new[]
+                    {
                     nome,role
                 };
 
-                //PAARA CRIA UMA IDENTIFICAÇÃO PRECISAMOS DE NO MONIMO UM A CLAIMS COM O NOME E UM TIOP DE AUTENTICAÇÃO
-                var identificacao = new ClaimsIdentity(claims, context.Options.AuthenticationType);
+                    //PAARA CRIA UMA IDENTIFICAÇÃO PRECISAMOS DE NO MONIMO UM A CLAIMS COM O NOME E UM TIOP DE AUTENTICAÇÃO
+                    var identificacao = new ClaimsIdentity(claims, context.Options.AuthenticationType);
 
 
-                //CRIAMOS O TICKET DE AUTENTICAÇÃO
-                var token = new AuthenticationTicket(identificacao, null);
+                    //CRIAMOS O TICKET DE AUTENTICAÇÃO
+                    var token = new AuthenticationTicket(identificacao, null);
 
-                //ENVIA O TOKEN PARA O CONTEXTO DA SUA APLICAÇÃO
-                context.Validated(token);
-            }
+                    //ENVIA O TOKEN PARA O CONTEXTO DA SUA APLICAÇÃO
+                    context.Validated(token);
+                }
+            });
             
         }
     }
