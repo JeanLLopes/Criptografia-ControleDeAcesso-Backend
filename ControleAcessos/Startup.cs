@@ -32,6 +32,12 @@ namespace ControleAcessos
             //Install-package Microsoft.owin.host.systemweb => funcionar com o iis
             //Install-package Microsoft.owin.cors => habilitar acessos a chamadas remotas de
                                                     //outros domínios
+            
+            //para trabalharmos com autenticação precisamos instalar os seguintes Pacotes
+            //Install-Package Microsoft.Owin.Security
+
+            // É um protocolo de autorização utilizado para API's
+            //Install-Package Microsoft.Owin.Security.Oauth
 
             //Este é o objeto de configuração
             var configuration = new HttpConfiguration();
